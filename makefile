@@ -8,10 +8,11 @@ CLIENT_OUT = client
 SERVER_OUT = server
 
 all:
-	clear
-	$(CC) -c $(CLIENT_CLASS_FILE).cpp $(SERVER_CLASS_FILE).cpp $(CLIENT_TEST_FILE).cpp $(SERVER_TEST_FILE).cpp
-	$(CC) -o $(CLIENT_OUT).out $(CLIENT_TEST_FILE).o $(CLIENT_CLASS_FILE).o -lpthread
-	$(CC) -o $(SERVER_OUT).out $(SERVER_TEST_FILE).o $(SERVER_CLASS_FILE).o -lpthread
+	$(CC) -o $(SERVER_OUT).out $(SERVER_TEST_FILE).cpp $(SERVER_CLASS_FILE).cpp -lpthread
+	$(CC) -o $(CLIENT_OUT).out $(CLIENT_TEST_FILE).cpp $(CLIENT_CLASS_FILE).cpp -lpthread
+	### example
+	### ./server.out
+	### ./client.out SERVER_ADDRESS SERVER_PORT ((DIRECTORY_FILE)|(C_MATH_EXPRESSION)){1,}
 
 clean : 
-	rm *.o $(CLIENT_OUT).out $(SERVER_OUT).out *.mp4
+	rm -f $(CLIENT_OUT).out $(SERVER_OUT).out request_*
