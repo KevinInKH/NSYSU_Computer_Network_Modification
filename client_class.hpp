@@ -1,11 +1,13 @@
-# ifndef __CLIENT_HPP__
-# define __CLIENT_HPP__
+#ifndef __CLIENT_HPP__
+#define __CLIENT_HPP__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
+#include <ctime>
+
 #include <iostream>
-#include <queue>
 #include <vector>
 
 // network related
@@ -15,6 +17,16 @@
 #include <netinet/in.h>
 
 using namespace std;
+
+#define BUFFERSIZE 	1024
+
+// experiment parameter
+// #define THRESHOLD	0.0001
+// #define THRESHOLD	0.00001
+// #define THRESHOLD	0.000001
+#define THRESHOLD	0
+#define ISDELAYACKED true
+// #define ISDELAYACKED false
 
 struct header{
 	uint16_t src_port;
@@ -30,27 +42,31 @@ struct header{
 
 struct packet{
 	struct header myheader;
-	char message[1024];
+	unsigned short message_length;
+	char message[BUFFERSIZE];
 };
 
 class client_class{
 	private:
-		int sockfd, seq_num, ack_num, rwnd, port_num, mss, rcv_base;
+		int sockfd, seq_num, ack_num, rwnd, port_num, rcv_base;
+		int fast;
+		int flag, loss_time, total_time;
+		string hostname;
 		struct sockaddr_in servaddr;
-        string ip_address;
+		string ip_address;
 		vector<string> message_vector;
-		queue<struct packet> message_queue;
+		vector<struct packet> message_queue;
 		vector<pair<int, bool>> client_wnd;
 		struct timeval timeout;
 		vector<struct packet> packet_buffer;
 	public:
-		client_class();
+		client_class(char*, int);
 		void send_pkt(struct packet);
 		struct packet recv_pkt();
-        void set_pkt();
-		struct packet create_pkt(string, string);
+		void set_pkt();
+		struct packet create_pkt(string, string, unsigned short =0);
 		void* processing(void*);
-		int est_connection();
+		void est_connection();
 		void set_request(string);
 		void write_file(ofstream &fp);
 };
