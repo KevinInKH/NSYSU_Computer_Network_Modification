@@ -1,11 +1,12 @@
 #ifndef __SERVER_HPP__
 #define __SERVER_HPP__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
+
 #include <iostream>
-#include <queue>
 
 // network related
 #include <sys/types.h>
@@ -32,26 +33,26 @@ struct header{
 
 struct packet{
 	struct header myheader;
-	char message[1024];
+	unsigned short message_length;
+	char message[BUFFERSIZE];
 };
 
 struct conn_thread_args{
-    struct sockaddr_in cliaddr;
-    char message[BUFFERSIZE];
-    int port_num;
-    struct packet recvpacket;
-    int seq_num;
+	struct sockaddr_in cliaddr;
+	int port_num;
+	struct packet recvpacket;
+	int seq_num;
 };
 
 class server_class{
-    private:
-        struct sockaddr_in servaddr;
-        int welcome_sockfd;
-    public:
-        server_class();
-        void welcome_sock_listen();
-        static void* connection_sock(void*);
-        static struct packet create_pkt(uint32_t, uint32_t, int, char*, string);
+	private:
+		struct sockaddr_in servaddr;
+		int welcome_sockfd;
+	public:
+		server_class();
+		void welcome_sock_listen();
+		static void* connection_sock(void*);
+		static struct packet create_pkt(uint32_t, uint32_t, int, char*, string, int);
 };
 
 #endif
