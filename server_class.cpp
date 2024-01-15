@@ -99,8 +99,8 @@ void server_class::welcome_sock_listen(){
 struct packet server_class::create_pkt(uint32_t seq_num, uint32_t ack_num, int rwnd, char message[BUFFERSIZE], string type, int data_length=BUFFERSIZE){
 
 	struct packet mypacket;
-	mypacket.myheader.src_port=0;
-	mypacket.myheader.des_port=PORT;
+	mypacket.myheader.src_port=PORT;
+	mypacket.myheader.des_port=0;
 	mypacket.myheader.seq_num=seq_num;
 	mypacket.myheader.ack_num=ack_num;
 	mypacket.myheader.len=0x50; // 01010000
