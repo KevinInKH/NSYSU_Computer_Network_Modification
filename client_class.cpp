@@ -17,7 +17,7 @@ client_class::client_class(char* hostname, int port_num){
 	// cout << hostname << " "  << port_num << endl;
 	this->hostname = hostname;
 	this->port_num = port_num;
-	flag = 0;
+	// flag = 0;
 	loss_time = 0;
 	total_time = 0;
 
@@ -174,8 +174,9 @@ void* client_class::processing(void *arg){
 		}
 		// cout << "waiting for the response: " << i << endl;
 
-		fast = ack_num;
-		cout << "fast: " << fast << endl;
+		// fast = ack_num;
+		// cout << "fast: " << fast << endl;
+
 		// writing video to the mp4 file
 		int video_size = 0, ptr_num = 0;
 		struct packet recvpacket;
@@ -344,16 +345,16 @@ struct packet client_class::recv_pkt(){
 		return create_pkt("message", "error");
 	}
 	else{
-		if(mypacket.myheader.seq_num - fast == 3 && flag == 0){
-			if(!flag) flag = 1;
-			cout << "send three acks to enter fast recovery, ack_num: " << ack_num << endl;
-			struct packet fast_rec_pkt = create_pkt("ack", "");
-			send_pkt(fast_rec_pkt);
-			send_pkt(fast_rec_pkt);
-			send_pkt(fast_rec_pkt);
-			return create_pkt("message", "fast");
-		}
-		else if(((double) rand() / (RAND_MAX)) < THRESHOLD){
+		// if(mypacket.myheader.seq_num - fast == 3 && flag == 0){
+		// 	if(!flag) flag = 1;
+		// 	cout << "send three acks to enter fast recovery, ack_num: " << ack_num << endl;
+		// 	struct packet fast_rec_pkt = create_pkt("ack", "");
+		// 	send_pkt(fast_rec_pkt);
+		// 	send_pkt(fast_rec_pkt);
+		// 	send_pkt(fast_rec_pkt);
+		// 	return create_pkt("message", "fast");
+		// }
+		if(((double) rand() / (RAND_MAX)) < THRESHOLD){
 			loss_time+=1;
 			cout << "*****loss packet*****\n";
 			return create_pkt("message", "error");

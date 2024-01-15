@@ -49,8 +49,8 @@ struct packet{
 class client_class{
 	private:
 		int sockfd, seq_num, ack_num, rwnd, port_num, rcv_base;
-		int fast;
-		int flag, loss_time, total_time;
+		// int fast, flag; 
+		int loss_time, total_time;
 		string hostname;
 		struct sockaddr_in servaddr;
 		string ip_address;

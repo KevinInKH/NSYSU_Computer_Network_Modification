@@ -1,7 +1,7 @@
 #include "server_class.hpp"
 
 using namespace std;
-
+	
 // test for server
 int main() {
 
