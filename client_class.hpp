@@ -64,7 +64,7 @@ class client_class{
 		void send_pkt(struct packet);
 		struct packet recv_pkt();
 		void set_pkt();
-		struct packet create_pkt(string, string, unsigned short =0);
+		struct packet create_pkt(string, string, unsigned short = 0);
 		void* processing(void*);
 		void est_connection();
 		void set_request(string);
