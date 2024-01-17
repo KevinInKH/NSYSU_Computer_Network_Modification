@@ -25,8 +25,8 @@ using namespace std;
 // #define THRESHOLD	0.00001
 // #define THRESHOLD	0.000001
 #define THRESHOLD	0
-#define ISDELAYACKED true
-// #define ISDELAYACKED false
+// #define ISDELAYACKED true
+#define ISDELAYACKED false
 
 struct header{
 	uint16_t src_port;
