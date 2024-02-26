@@ -41,10 +41,10 @@ string nslookup(string address_str){
 	int s;
 
 	// Specify lookup type (A record for IP address)
+	hints.ai_flags = 0;
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = 0;
-	hints.ai_flags = 0;
 
 	// perfrom dns lookup
 	s = getaddrinfo(address_str.c_str(), NULL, &hints, &result);
