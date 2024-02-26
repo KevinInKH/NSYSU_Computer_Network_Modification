@@ -5,6 +5,9 @@
 
 #include <fstream>
 
+// for dns lookup
+#include <netdb.h>
+
 // for math string evaluation
 #include "exprtk.hpp"
 
@@ -31,6 +34,34 @@ string calc(string expression_str){
 	}
 	else
 		return "NAN";
+}
+
+string nslookup(string address_str){
+	struct addrinfo hints, *result;
+	int s;
+
+	// Specify lookup type (A record for IP address)
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = 0;
+	hints.ai_flags = 0;
+
+	// perfrom dns lookup
+	s = getaddrinfo(address_str.c_str(), NULL, &hints, &result);
+	if (s != 0) {
+		cerr << "Error: " << gai_strerror(s) << endl;
+		return "";
+	}
+
+	// just return the first record
+	struct sockaddr_in* addr = reinterpret_cast<struct sockaddr_in*>(result->ai_addr);
+	char ip[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &(addr->sin_addr), ip, INET_ADDRSTRLEN);
+
+	string return_ip_str = ip;
+	freeaddrinfo(result);
+
+	return return_ip_str;
 }
 
 server_class::server_class(){
@@ -210,24 +241,44 @@ void* server_class::connection_sock(void* args){
 			// get request from the recvpacket
 			string request = recvpacket.message;
 			cout << "\n\nget request from client: " << request << endl;
-			cout << "try video operation first";
+			cout << "try video operation" << endl;
 
-			// start reading the video file...
+			// first: try to read the file...
 			ifstream fp(request, ios::binary | ios::ate);
 
 			if(!fp){
 				// cannot open the file
+				// second: try to do dns-lookup...
 				cout << "cannot open the file" << endl;
-				cout << "try calculation operation\n";
-				string ans = calc(request);
-				int len_ans = ans.length();
-				cout << "answer: " << ans << endl;
-				char calc_buffer[len_ans+2];
-				for(int p=0;p<len_ans;p++) calc_buffer[p] = ans.c_str()[p];
-				calc_buffer[len_ans] = '\n';
-				calc_buffer[len_ans+1] = 0;
-				response_queue.push_back(create_pkt(seq_num, ack_num, rwnd, calc_buffer, "message", len_ans+2));
-				seq_num+=1;
+				cout << "try dns lookup" << endl;
+
+				string dns_result = nslookup(request);
+				if(dns_result != "")
+				{
+					cout << "dns lookup for " << request << " : " << dns_result << endl;
+					int len_res = dns_result.length();
+					char dns_buffer[len_res+2];
+					for(int p=0;p<len_res;p++) dns_buffer[p] = dns_result.c_str()[p];
+					dns_buffer[len_res] = '\n';
+					dns_buffer[len_res+1] = 0;
+					response_queue.push_back(create_pkt(seq_num, ack_num, rwnd, dns_buffer, "message", len_res+2));
+					seq_num+=1;
+				}
+				else
+				{
+					// dns lookup fail
+					// finally: try to do calculation
+					cout << "try calculation operation" << endl;
+					string cal_result = calc(request);
+					int len_ans = cal_result.length();
+					cout << "answer: " << cal_result << endl;
+					char calc_buffer[len_ans+2];
+					for(int p=0;p<len_ans;p++) calc_buffer[p] = cal_result.c_str()[p];
+					calc_buffer[len_ans] = '\n';
+					calc_buffer[len_ans+1] = 0;
+					response_queue.push_back(create_pkt(seq_num, ack_num, rwnd, calc_buffer, "message", len_ans+2));
+					seq_num+=1;
+				}
 			}
 			else
 			{
