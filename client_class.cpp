@@ -4,6 +4,8 @@
 #include "client_class.hpp"
 
 #include <fstream>
+
+// miscellaneous
 #include <algorithm>
 
 // for multi thread
