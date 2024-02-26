@@ -12,7 +12,7 @@ all:
 	$(CC) -o $(CLIENT_OUT).out $(CLIENT_TEST_FILE).cpp $(CLIENT_CLASS_FILE).cpp -lpthread
 	### example
 	### ./server.out
-	### ./client.out SERVER_ADDRESS SERVER_PORT ((DIRECTORY_FILE)|(C_MATH_EXPRESSION)){1,}
+	### ./client.out SERVER_ADDRESS SERVER_PORT ((DIRECTORY_FILE)|(DNS_LOOKUP)|(C_MATH_EXPRESSION)){1,}
 
 clean : 
 	rm -f $(CLIENT_OUT).out $(SERVER_OUT).out request_*
