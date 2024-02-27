@@ -179,8 +179,6 @@ void* client_class::processing(void *arg){
 		// fast = ack_num;
 		// cout << "fast: " << fast << endl;
 
-		// writing video to the mp4 file
-		int video_size = 0, ptr_num = 0;
 		struct packet recvpacket;
 
 		string filename = filename_prefix + "_" + to_string((i+1));
